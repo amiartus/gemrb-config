@@ -20,21 +20,15 @@ from gi.repository import Gtk
 
 class Gui:
 
-	def delete(self, widget, event=None):
-		Gtk.main_quit()
-		return False			
-
 	def __init__(self, source):
 		window = Gtk.Window()
 		window.connect("delete_event", self.delete)
-		#window.set_border_width(10)
+		window.set_title("GemRB Config")
+		window.set_border_width(10)
+		window.set_size_request(300, 300)
 
 		table = Gtk.Table(3, 6, False)
 		window.add(table)
-
-		window.set_title("GemRB Config")
-		window.set_border_width(0)
-		window.set_size_request(300, 300)
 
 		# Create a new notebook, place the tabs
 		notebook = Gtk.Notebook()
@@ -42,14 +36,10 @@ class Gui:
 		table.attach(notebook, 0, 6, 0, 1)
 		notebook.show()
 
-		self.show_tabs = True
-		self.show_border = True	
-	
-		for i in source.sections:		
+		for section in source.sections:		
 			vbox = Gtk.VBox()
 			vbox.set_border_width(0)
-			vbox.set_size_request(100, 100)
-			vbox.show()    
+			vbox.show() 
 
 			scrolled_window = Gtk.ScrolledWindow()
 			scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
@@ -57,23 +47,35 @@ class Gui:
 			scrolled_window.show()
 			vbox.pack_start(scrolled_window, True, True, padding = 0)
 
-			table1 = Gtk.Table(i.options.__len__(), 1, False)
-			scrolled_window.add_with_viewport(table1)
-			table1.show()
+			section_vbox = Gtk.VBox()
+			scrolled_window.add_with_viewport(section_vbox)
+			section_vbox.show()
 			
-			for j, k in enumerate(i.options):
-				button = Gtk.ToggleButton(k.name)
-				table1.attach(button, 1, 2, j, j+1)
+			for i, option in enumerate(section.options):
+				frame = Gtk.Frame()
+				frame.set_label(option.name)
+				
+				button = Gtk.ToggleButton(option.name)
+				frame.add(button)
+
+				section_vbox.pack_start(frame, False, False, padding = 5)
 				button.show()
+				
+				frame.set_tooltip_text("\n".join(option.description))
 
-			label = Gtk.Label(i.name)
+				frame.show()
+
+			label = Gtk.Label(section.name)
 			notebook.append_page(vbox, label)
-
 
 		notebook.set_current_page(0)
 
 		table.show()
 		window.show()
+
+	def delete(self, widget, event=None):
+		Gtk.main_quit()
+		return False			
 
 class Source:
 
