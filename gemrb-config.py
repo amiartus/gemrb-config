@@ -15,8 +15,68 @@
 
 import os
 import re
+#import pygtk2
+from gi.repository import Gtk
 
-class File:
+class Gui:
+
+	def delete(self, widget, event=None):
+		Gtk.main_quit()
+		return False			
+
+	def __init__(self, source):
+		window = Gtk.Window()
+		window.connect("delete_event", self.delete)
+		#window.set_border_width(10)
+
+		table = Gtk.Table(3, 6, False)
+		window.add(table)
+
+		window.set_title("GemRB Config")
+		window.set_border_width(0)
+		window.set_size_request(300, 300)
+
+		# Create a new notebook, place the tabs
+		notebook = Gtk.Notebook()
+		notebook.set_tab_pos(Gtk.PositionType.LEFT)
+		table.attach(notebook, 0, 6, 0, 1)
+		notebook.show()
+
+		self.show_tabs = True
+		self.show_border = True	
+	
+		for i in source.sections:		
+			vbox = Gtk.VBox()
+			vbox.set_border_width(0)
+			vbox.set_size_request(100, 100)
+			vbox.show()    
+
+			scrolled_window = Gtk.ScrolledWindow()
+			scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
+
+			scrolled_window.show()
+			vbox.pack_start(scrolled_window, True, True, padding = 0)
+
+			table1 = Gtk.Table(i.options.__len__(), 1, False)
+			scrolled_window.add_with_viewport(table1)
+			table1.show()
+			
+			for j, k in enumerate(i.options):
+				button = Gtk.ToggleButton(k.name)
+				table1.attach(button, 1, 2, j, j+1)
+				button.show()
+
+			label = Gtk.Label(i.name)
+			notebook.append_page(vbox, label)
+
+
+		notebook.set_current_page(0)
+
+		table.show()
+		window.show()
+
+class Source:
+
 	def __init__(self, fname):
 		self.section_start = []
 		self.sections = []
@@ -39,6 +99,7 @@ class File:
 				self.sections.append(Section(self.buff[item:self.section_start[i+1] - 1]))
 
 class Section:
+
 	def __init__(self, buff):	
 		self.description = []
 		self.option_start = []
@@ -102,8 +163,15 @@ class Option:
 		print(self.choices)
 		print(self.default_value)
 
+def main():
+	Gtk.main()
+	return 0
 
-a = File('./GemRB.cfg.skel')
+a = Source('./GemRB.cfg.skel')
 
 for i in a.sections:
 	i.print()
+
+if __name__ == "__main__":
+	Gui(a)
+	main()
