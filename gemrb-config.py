@@ -80,7 +80,6 @@ class GUI(Gtk.Window):
 		radiobox = Gtk.HBox(spacing = 6)
 		parent.add(radiobox)
 		button = []
-		print(option.type)
 		
 		for j, choice in enumerate(option.choices):
 			if j == 0:
@@ -90,6 +89,8 @@ class GUI(Gtk.Window):
 
 			button[j].connect("toggled", self.handler_Radiobutton_toggled, j, option)
 			radiobox.pack_start(button[j], False, False, 0)
+		
+		button[option.choices.index(option.default_value)].set_active(True)
 
 	def handler_Radiobutton_toggled(self, button, index, option):
 		if button.get_active(): 
@@ -102,6 +103,7 @@ class GUI(Gtk.Window):
 		
 		textfield = Gtk.Entry()
 		textfield.connect("focus_out_event", self.handler_Textbox_FocusOut, option)	
+		textfield.set_text(option.default_value)
 		hbox.pack_start(textfield, True, True, 0)
 	
 		button = Gtk.Button("Choose Folder")
@@ -112,10 +114,11 @@ class GUI(Gtk.Window):
 	def makeStringblock(self, parent, option):
 		textfield = Gtk.Entry()
 		textfield.connect("focus_out_event", self.handler_Textbox_FocusOut, option)
+		textfield.set_text(option.default_value)
 		parent.add(textfield)
 	
 	def handler_Textbox_FocusOut(self, button, __WHAT_IS_THIS__, option):
-		print('It worked!', button.get_text())
+		print('Textfield is set to:', button.get_text())
 		option.curent = button.get_text()
 
 	def handler_FileChooserDialog_clicked(self, button, option):
@@ -137,12 +140,11 @@ class GUI(Gtk.Window):
 	def makeSlideblock(self, parent, option):
 		slider = Gtk.HScale.new_with_range(int(option.choices[0]), int(option.choices[1]), 1)
 		slider.connect("button_release_event", self.handler_Slider_Release, option)
+		slider.set_value(int(option.default_value))
 		parent.add(slider)
-
 
 	def handler_Slider_Release(self, button, __WHAT_IS_THIS__, option):
 		print("Button released, new val is:", int(button.get_value()))
-
 	
 	def delete(self, widget, event = None):
 		Gtk.main_quit()
@@ -218,7 +220,7 @@ class Option:
 		self.type = self.words[2]
 
 		if self.type == 'Boolean':
-			self.choices = [0, 1]
+			self.choices = ['0', '1']
 		elif self.type == 'Radiobutton' or self.type == 'Slidebutton':
 			self.choices = self.words[3:self.words.__len__()]
 
