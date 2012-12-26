@@ -14,7 +14,7 @@
 GameType=bg2
 
 #+ Game Name 
-# GameName String
+# GameName String 20
 # Title for GemRB window, use anything you wish, e.g. Baldur's Gate 3: RotFL   
 GameName=Baldur's Gate 2
 
@@ -56,7 +56,7 @@ Bpp=32
 Fullscreen=0
 
 #+ Tooltip delay 
-# TooltipDelay Integer
+# TooltipDelay Slidebutton 1000
 # Delay before tooltips appear in milliseconds
 TooltipDelay=500
 
@@ -69,7 +69,7 @@ TooltipDelay=500
 AudioDriver=openal
 
 #+ Ambient Volume
-# VolumeAmbients Integer
+# VolumeAmbients Slidebutton 100
 # Volume of ambient sounds
 VolumeAmbients=100
 
@@ -104,7 +104,7 @@ VolumeVoices=100
 # coordinates and may stop being clickable).        
 
 #+ GUI Enhancements
-# GUIEnhancements Integer 15
+# GUIEnhancements Slidebutton 15
 # Enable all gui enhancements?
 GUIEnhancements=15
 
@@ -160,14 +160,14 @@ CD4=none
 CD5=none
 
 #+ GemRB Cache Path          
-# CachePath StringPath  
+# CachePath Path  
 # This is the path where GemRB will store the      
 # cached files, enter the full path to the GemRB   
 # Cache directory.                                 
 CachePath=./Cache/
 
 #+ GemRB Save Path 
-# SavePath StringPath                                                   
+# SavePath Path                                                   
 # This is the path where GemRB looks for saved     
 # games.                                           
 # Enter the full path to the directory containing  
@@ -178,7 +178,7 @@ SavePath=none
 
 #@ Input Parameters                                 
 
-# Soft Keyboard
+#+ Soft Keyboard
 # UseSoftKeyboard Boolean
 # Whether or not to use software keyboard on devices that support one
 UseSoftKeyboard=0
