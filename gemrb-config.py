@@ -88,10 +88,10 @@ class GUI(Gtk.Window):
 			else:
 				button.append(Gtk.RadioButton.new_with_label_from_widget(button[j-1], choice if option.type == 'Radiobutton' else 'Yes'))
 
-			button[j].connect("toggled", self.toggle_Radioblock, j, option)
+			button[j].connect("toggled", self.handler_Radiobutton_toggled, j, option)
 			radiobox.pack_start(button[j], False, False, 0)
 
-	def toggle_Radioblock(self, button, index, option):
+	def handler_Radiobutton_toggled(self, button, index, option):
 		if button.get_active(): 
 			option.current = option.choices[index]
 			print ("Button", index, "from group", button.get_parent().get_parent().get_label(), "was turned", button.get_active(), "currentval is", option.current)
@@ -101,24 +101,24 @@ class GUI(Gtk.Window):
 		parent.add(hbox)
 		
 		textfield = Gtk.Entry()
-		textfield.connect("focus_out_event", self.tboxFocusOutHandler, option)	
+		textfield.connect("focus_out_event", self.handler_Textbox_FocusOut, option)	
 		hbox.pack_start(textfield, True, True, 0)
 	
 		button = Gtk.Button("Choose Folder")
 		button.set_size_request(10, -1)
-		button.connect("clicked", self.click_Folder, option)
+		button.connect("clicked", self.handler_FileChooserDialog_clicked, option)
 		hbox.pack_start(button, False, False, 0)	
 
 	def makeStringblock(self, parent, option):
 		textfield = Gtk.Entry()
-		textfield.connect("focus_out_event", self.tboxFocusOutHandler, option)
+		textfield.connect("focus_out_event", self.handler_Textbox_FocusOut, option)
 		parent.add(textfield)
 	
-	def tboxFocusOutHandler(self, button, __WHAT_IS_THIS__, option):
+	def handler_Textbox_FocusOut(self, button, __WHAT_IS_THIS__, option):
 		print('It worked!', button.get_text())
 		option.curent = button.get_text()
 
-	def click_Folder(self, button, option):
+	def handler_FileChooserDialog_clicked(self, button, option):
 		dialog = Gtk.FileChooserDialog("Please choose a folder", self, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
 		dialog.set_default_size(200, 200)
 
@@ -136,11 +136,11 @@ class GUI(Gtk.Window):
 
 	def makeSlideblock(self, parent, option):
 		slider = Gtk.HScale.new_with_range(int(option.choices[0]), int(option.choices[1]), 1)
-		slider.connect("button_release_event", self.sliderReleaseHandler, option)
+		slider.connect("button_release_event", self.handler_Slider_Release, option)
 		parent.add(slider)
 
 
-	def sliderReleaseHandler(self, button, __WHAT_IS_THIS__, option):
+	def handler_Slider_Release(self, button, __WHAT_IS_THIS__, option):
 		print("Button released, new val is:", int(button.get_value()))
 
 	
