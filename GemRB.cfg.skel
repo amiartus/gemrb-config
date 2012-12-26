@@ -79,7 +79,7 @@ VolumeAmbients=100
 VolumeMovie=100
 
 #+ Music Volume
-# VolumeMusic Slidebuton 0 100
+# VolumeMusic Slidebutton 0 100
 # Volume of background music
 VolumeMusic=100
 
