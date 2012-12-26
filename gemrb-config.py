@@ -73,7 +73,8 @@ class GUI(Gtk.Window):
 			notebook.append_page(vbox, label)
 		
 		commit = Gtk.Button("Commit")
-		commit.set_size_request(25, 25)
+		commit.set_size_request(100, -1)
+		commit.set_halign(2)
 		commit.connect("clicked", self.handler_Commit_clicked, source)
 		mainbox.pack_start(commit, False, False, padding = 0)
 
