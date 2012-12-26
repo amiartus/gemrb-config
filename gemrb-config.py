@@ -26,13 +26,13 @@ class GUI(Gtk.Window):
 		window.set_border_width(10)
 		window.set_default_size(800, 400)
 
-		table = Gtk.Table(3, 6, False)
-		window.add(table)
+		mainbox = Gtk.VBox()
+		window.add(mainbox)
 
 		# Create a new notebook, place the tabs
 		notebook = Gtk.Notebook()
 		notebook.set_tab_pos(Gtk.PositionType.LEFT)
-		table.attach(notebook, 0, 6, 0, 1)
+		mainbox.pack_start(notebook, True, True, padding = 0)
 
 		for section in source.sections:		
 			vbox = Gtk.VBox()
@@ -71,6 +71,11 @@ class GUI(Gtk.Window):
 				
 			label = Gtk.Label(section.name)
 			notebook.append_page(vbox, label)
+		
+		commit = Gtk.Button("Commit")
+		commit.set_size_request(25, 25)
+		commit.connect("clicked", self.handler_Commit_clicked, source)
+		mainbox.pack_start(commit, False, False, padding = 0)
 
 		notebook.set_current_page(0)
 
@@ -145,7 +150,11 @@ class GUI(Gtk.Window):
 
 	def handler_Slider_Release(self, button, __WHAT_IS_THIS__, option):
 		print("Button released, new val is:", int(button.get_value()))
+		option.current = str(button.get_value())
 	
+	def handler_Commit_clicked(self, button, source):
+		print("placeholder")	
+
 	def delete(self, widget, event = None):
 		Gtk.main_quit()
 		return True			

@@ -27,6 +27,7 @@ FINISHED
 ===========
 
 GUI for all option properties, clickable connected to signals for buttons
+Set all values to default when program starts
 
 
 TODO
@@ -34,5 +35,4 @@ TODO
 
 Separate code into functions, make it more readable
 Make the code more effective - study python, find effective ways to do stuff, make the code less C - like
-Set all values to default when program starts
 Make 'commit' button to generate gemrb.cfg
