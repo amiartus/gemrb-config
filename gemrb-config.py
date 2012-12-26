@@ -125,7 +125,7 @@ class GUI(Gtk.Window):
 	
 	def handler_Textbox_FocusOut(self, button, __WHAT_IS_THIS__, option):
 		print('Textfield is set to:', button.get_text())
-		option.curent = button.get_text()
+		option.current = button.get_text()
 
 	def handler_FileChooserDialog_clicked(self, button, option):
 		dialog = Gtk.FileChooserDialog("Please choose a folder", self, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
@@ -151,10 +151,12 @@ class GUI(Gtk.Window):
 
 	def handler_Slider_Release(self, button, __WHAT_IS_THIS__, option):
 		print("Button released, new val is:", int(button.get_value()))
-		option.current = str(button.get_value())
+		option.current = str(int(button.get_value()))
 	
 	def handler_Commit_clicked(self, button, source):
-		print("placeholder")	
+		outputfile = open('gemrb.cfg','w')
+		outputfile.write(source.dump())
+		outputfile.close()		
 
 	def delete(self, widget, event = None):
 		Gtk.main_quit()
@@ -183,6 +185,12 @@ class Source:
 			else:
 				self.sections.append(Section(self.buff[item:self.section_start[i+1] - 1]))
 
+	def dump(self):
+		buffer = ''
+		for section in self.sections:
+			buffer += section.dump()
+		return buffer
+
 class Section:
 
 	def __init__(self, buff):	
@@ -209,6 +217,15 @@ class Section:
 			else:
 				self.options.append(Option(buff[item:self.option_start[i+1] - 1]))
 	
+	def dump(self):
+		buffer = '# ' + self.name + '\n' 
+		if self.description: buffer += '# ' + '\n# '.join(self.description) + '\n'
+
+		for option in self.options:
+			buffer += option.dump()
+
+		return buffer
+
 	def print(self):
 		print('\n' + self.name)
 		print('\n'.join(self.description))
@@ -240,6 +257,14 @@ class Option:
 
 		self.default_value = buff[-1].split('=',1)[-1]
 		self.current = self.default_value
+
+	def dump(self):
+		buffer = '# ' + self.name + '\n'
+		if self.description: buffer += '# ' + '\n# '.join(self.description) + '\n'
+		
+		if self.option_string: buffer += self.option_string + '=' + self.current + '\n\n'
+
+		return buffer
 
 	def print(self):
 		print('\n' + self.name)
