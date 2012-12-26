@@ -15,17 +15,16 @@
 
 import os
 import re
-#import pygtk2
 from gi.repository import Gtk
 
-class Gui:
+class GUI(Gtk.Window):
 
 	def __init__(self, source):
 		window = Gtk.Window()
 		window.connect("delete_event", self.delete)
 		window.set_title("GemRB Config")
 		window.set_border_width(10)
-		window.set_size_request(300, 300)
+		window.set_default_size(800, 400)
 
 		table = Gtk.Table(3, 6, False)
 		window.add(table)
@@ -34,48 +33,120 @@ class Gui:
 		notebook = Gtk.Notebook()
 		notebook.set_tab_pos(Gtk.PositionType.LEFT)
 		table.attach(notebook, 0, 6, 0, 1)
-		notebook.show()
 
 		for section in source.sections:		
 			vbox = Gtk.VBox()
 			vbox.set_border_width(0)
-			vbox.show() 
+			vbox.set_tooltip_text("\n".join(section.description))
 
 			scrolled_window = Gtk.ScrolledWindow()
 			scrolled_window.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.ALWAYS)
 
-			scrolled_window.show()
 			vbox.pack_start(scrolled_window, True, True, padding = 0)
 
 			section_vbox = Gtk.VBox()
 			scrolled_window.add_with_viewport(section_vbox)
-			section_vbox.show()
 			
 			for i, option in enumerate(section.options):
 				frame = Gtk.Frame()
 				frame.set_label(option.name)
-				
-				button = Gtk.ToggleButton(option.name)
-				frame.add(button)
-
-				section_vbox.pack_start(frame, False, False, padding = 5)
-				button.show()
-				
 				frame.set_tooltip_text("\n".join(option.description))
+				
+				if option.type == 'Radiobutton' or option.type == 'Boolean':
+					self.makeRadioblock(frame, option)
 
-				frame.show()
+				elif option.type == "String":
+					self.makeStringblock(frame, option)
 
+				elif option.type == "Path":
+					self.makePathblock(frame, option)
+
+				elif option.type == "Slidebutton":
+					self.makeSlideblock(frame, option)
+				
+				else:
+					print('WARNING: Missing button for type:', option.type)
+
+				section_vbox.pack_start(frame, False, False, padding = 10)
+				
 			label = Gtk.Label(section.name)
 			notebook.append_page(vbox, label)
 
 		notebook.set_current_page(0)
 
-		table.show()
-		window.show()
+		window.show_all()
+	
+	def makeRadioblock(self, parent, option):
+		radiobox = Gtk.HBox(spacing = 6)
+		parent.add(radiobox)
+		button = []
+		print(option.type)
+		
+		for j, choice in enumerate(option.choices):
+			if j == 0:
+				button.append(Gtk.RadioButton.new_with_label_from_widget(None, choice if option.type == 'Radiobutton' else 'No'))
+			else:
+				button.append(Gtk.RadioButton.new_with_label_from_widget(button[j-1], choice if option.type == 'Radiobutton' else 'Yes'))
 
-	def delete(self, widget, event=None):
+			button[j].connect("toggled", self.toggle_Radioblock, j, option)
+			radiobox.pack_start(button[j], False, False, 0)
+
+	def toggle_Radioblock(self, button, index, option):
+		if button.get_active(): 
+			option.current = option.choices[index]
+			print ("Button", index, "from group", button.get_parent().get_parent().get_label(), "was turned", button.get_active(), "currentval is", option.current)
+
+	def makePathblock(self, parent, option):
+		hbox = Gtk.HBox(spacing = 6)
+		parent.add(hbox)
+		
+		textfield = Gtk.Entry()
+		textfield.connect("focus_out_event", self.tboxFocusOutHandler, option)	
+		hbox.pack_start(textfield, True, True, 0)
+	
+		button = Gtk.Button("Choose Folder")
+		button.set_size_request(10, -1)
+		button.connect("clicked", self.click_Folder, option)
+		hbox.pack_start(button, False, False, 0)	
+
+	def makeStringblock(self, parent, option):
+		textfield = Gtk.Entry()
+		textfield.connect("focus_out_event", self.tboxFocusOutHandler, option)
+		parent.add(textfield)
+	
+	def tboxFocusOutHandler(self, button, __WHAT_IS_THIS__, option):
+		print('It worked!', button.get_text())
+		option.curent = button.get_text()
+
+	def click_Folder(self, button, option):
+		dialog = Gtk.FileChooserDialog("Please choose a folder", self, Gtk.FileChooserAction.SELECT_FOLDER, (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL, "Select", Gtk.ResponseType.OK))
+		dialog.set_default_size(200, 200)
+
+		response = dialog.run()
+
+		if response == Gtk.ResponseType.OK:
+			print ("Select clicked")
+			print ("Folder selected: " + dialog.get_filename())
+			option.current = dialog.get_filename()
+			button.get_parent().get_children()[0].set_text(dialog.get_filename())
+		elif response == Gtk.ResponseType.CANCEL:
+			print ("Cancel clicked")
+
+		dialog.destroy()
+
+	def makeSlideblock(self, parent, option):
+		slider = Gtk.HScale.new_with_range(int(option.choices[0]), int(option.choices[1]), 1)
+		slider.connect("button_release_event", self.sliderReleaseHandler, option)
+		parent.add(slider)
+
+
+	def sliderReleaseHandler(self, button, __WHAT_IS_THIS__, option):
+		print("Button released, new val is:", int(button.get_value()))
+
+	
+	def delete(self, widget, event = None):
 		Gtk.main_quit()
-		return False			
+		return True			
 
 class Source:
 
@@ -148,15 +219,15 @@ class Option:
 
 		if self.type == 'Boolean':
 			self.choices = [0, 1]
-		else:
-			if self.type == 'Radiobutton':
-				self.choices = self.words[3:self.words.__len__()]
+		elif self.type == 'Radiobutton' or self.type == 'Slidebutton':
+			self.choices = self.words[3:self.words.__len__()]
 
 		for i, string in enumerate(buff[2:(buff.__len__()-1)]):
 			if not string: continue
 			if string[0] == '#': self.description.append(string.lstrip('# '))
 
 		self.default_value = buff[-1].split('=',1)[-1]
+		self.current = self.default_value
 
 	def print(self):
 		print('\n' + self.name)
@@ -175,5 +246,5 @@ for i in a.sections:
 	i.print()
 
 if __name__ == "__main__":
-	Gui(a)
+	GUI(a)
 	main()
