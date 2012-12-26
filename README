@@ -21,3 +21,18 @@ USAGE
 3. Select the options you desire in GUI
 4. Hit Commit, this will generate gemrb.cfg in the directory where gemrb-config.py is placed
 5. gemrb.cfg is now ready to be used, copy it in gemrb directory
+
+
+FINISHED
+===========
+
+GUI for all option properties, clickable connected to signals for buttons
+
+
+TODO
+===========
+
+Separate code into functions, make it more readable
+Make the code more effective - study python, find effective ways to do stuff, make the code less C - like
+Set all values to default when program starts
+Make 'commit' button to generate gemrb.cfg
