@@ -56,7 +56,7 @@ Bpp=32
 Fullscreen=0
 
 #+ Tooltip delay 
-# TooltipDelay Slidebutton 1000
+# TooltipDelay Slidebutton 0 1000
 # Delay before tooltips appear in milliseconds
 TooltipDelay=500
 
@@ -69,27 +69,27 @@ TooltipDelay=500
 AudioDriver=openal
 
 #+ Ambient Volume
-# VolumeAmbients Slidebutton 100
+# VolumeAmbients Slidebutton 0 100
 # Volume of ambient sounds
 VolumeAmbients=100
 
 #+ Movie Volume
-# VolumeMovie Slidebutton 100
+# VolumeMovie Slidebutton 0 100
 # Volume during movie playback
 VolumeMovie=100
 
 #+ Music Volume
-# VolumeMusic Slidebuton 100
+# VolumeMusic Slidebuton 0 100
 # Volume of background music
 VolumeMusic=100
 
 #+ Sound effect Volume
-# VolumeSFX Slidebutton 100
+# VolumeSFX Slidebutton 0 100
 # Volume of sound effects
 VolumeSFX=100
 
 #+ NPC Voice Volume
-# VolumeVoices Slidebutton 100
+# VolumeVoices Slidebutton 0 100
 # Volume of PC or NPC voices
 VolumeVoices=100
 
@@ -104,7 +104,7 @@ VolumeVoices=100
 # coordinates and may stop being clickable).        
 
 #+ GUI Enhancements
-# GUIEnhancements Slidebutton 15
+# GUIEnhancements Slidebutton 0 15
 # Enable all gui enhancements?
 GUIEnhancements=15
 
