@@ -15,6 +15,9 @@
 # along with gemrb-config.  If not, see <http://www.gnu.org/licenses/>.
 
 import sys
+
+sys.dont_write_bytecode = True
+
 from modules import parser
 
 if sys.version_info.major == 3:
