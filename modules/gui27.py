@@ -14,6 +14,7 @@
 # along with gemrb-config.  If not, see <http://www.gnu.org/licenses/>.
 
 import gtk
+import parser
 
 class GUI(gtk.Window):
 
