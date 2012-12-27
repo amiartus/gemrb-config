@@ -15,12 +15,13 @@ python3-gobject
 For python2.7 compatible version you'll need:
 python2.7
 
+You will need at least python2.7 to run this program.
+
 
 USAGE
 ============
 
-1. Copy the GemRB.cfg.skel and gemrb-config.py to same directory 
-(choose gemrb-config.py from python3 or python2.7 directory depending on your version of python)
+1. Download whole package as is and copy it to same directory 
 2. Run gemrb-config.py
 3. Select the options you desire in GUI
 4. Hit Commit, this will generate gemrb.cfg in the directory where gemrb-config.py is placed
