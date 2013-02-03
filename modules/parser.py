@@ -108,6 +108,10 @@ class Option:
 		buffer = '# ' + self.name + '\n'
 		if self.description: buffer += '# ' + '\n# '.join(self.description) + '\n'
 		
-		if self.option_string: buffer += self.option_string + '=' + self.current + '\n\n'
+		if self.option_string: 
+			if self.current == "none":
+				buffer += '# '
+
+			buffer += self.option_string + '=' + self.current + '\n\n'
 
 		return buffer
