@@ -1,4 +1,8 @@
 #!/usr/bin/env python
+
+# Gemrb-config is a GUI for setting up a config file for GemRB.
+# Copyright (C) 2012-2013  Adam Miartus
+#
 # This file is part of Gemrb-config.
 #
 # Gemrb-config is free software: you can redistribute it and/or modify
